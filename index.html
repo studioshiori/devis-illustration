@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Studio Shiori Devis</title>
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap">
+<style>
+/* Mise en page : colonne unique de 440px max, type "carnet de commande" ; cartes illustrées pleine largeur, une étape par écran. */
+:root{
+  --bg:#FBF6F1; --surface:#FFFFFF; --ink:#2F2229; --muted:#75666C;
+  --rose:#A2505C; --rose-soft:#F3E2E1; --on-rose:#FFFFFF; --gold:#8F6D2A; --line:#E7DAD3;
+  --art:#E9C9C6; --art-2:#D9B77A;
+  --font-display:"Fraunces", Georgia, "Times New Roman", serif;
+  --font-body:"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1417; --surface:#251C20; --ink:#F3E9E6; --muted:#B0A0A5;
+    --rose:#E19AA4; --rose-soft:#3A2830; --on-rose:#1B1417; --gold:#D8B56E; --line:#3A2D32;
+    --art:#7A4A55; --art-2:#A88548; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1417; --surface:#251C20; --ink:#F3E9E6; --muted:#B0A0A5;
+  --rose:#E19AA4; --rose-soft:#3A2830; --on-rose:#1B1417; --gold:#D8B56E; --line:#3A2D32;
+  --art:#7A4A55; --art-2:#A88548; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 40px}
+.app{max-width:440px;margin:0 auto}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{font-family:var(--font-display);font-style:italic;font-size:17px;color:var(--gold)}
+.back{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+.back[hidden]{display:none!important}
+.progress{display:flex;gap:4px;margin-bottom:22px}
+.progress i{flex:1;height:3px;border-radius:2px;background:var(--line)}
+.progress i.on{background:var(--rose)}
+h1{font-family:var(--font-display);font-weight:600;font-size:28px;line-height:1.15;margin:0 0 6px;text-wrap:balance}
+.lead{color:var(--muted);margin:0 0 20px;font-size:14px}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0 0 8px;font-weight:600}
+.cards{display:grid;gap:14px}
+.cards.two{grid-template-columns:1fr 1fr}
+.card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1.5px solid var(--line);
+  border-radius:14px;padding:0;cursor:pointer;overflow:hidden;transition:border-color .15s, transform .15s}
+.card:hover{border-color:var(--rose)}
+.card:active{transform:scale(.99)}
+.card[aria-pressed="true"]{border-color:var(--rose);box-shadow:0 0 0 2px var(--rose)}
+.card:focus-visible,.back:focus-visible,.cta:focus-visible,.link:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+.art{display:flex;align-items:center;justify-content:center;background:var(--rose-soft);aspect-ratio:16/10;max-width:100%}
+.art svg{height:100%;width:auto;max-width:100%}
+.art img{width:100%;height:100%;object-fit:cover}
+.cards.two .art{aspect-ratio:1/1}
+.body{padding:12px 14px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.body > div{min-width:0}
+.name{font-family:var(--font-display);font-weight:600;font-size:18px;line-height:1.2}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.price{font-size:12.5px;color:var(--gold);font-weight:600;margin-top:6px}
+.see{flex:none;font-size:12px;font-weight:600;color:var(--rose);border:1px solid var(--rose);border-radius:999px;padding:4px 12px;margin-top:2px}
+.card.text .body{padding:14px}
+.panel{margin-top:16px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px}
+label.f{display:block;font-size:13px;font-weight:600;margin:0 0 6px}
+.field{margin-bottom:14px}
+.field small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:4px}
+input[type=text],input[type=tel],input[type=email],input[type=number],textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);
+  border:1.5px solid var(--line);border-radius:10px;padding:11px 12px}
+textarea{min-height:92px;resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--rose);outline-offset:1px;border-color:var(--rose)}
+input.bad,textarea.bad{border-color:#C0392B}
+.err{color:#B03A2E;font-size:12.5px;margin-top:4px}
+:root[data-theme="dark"] .err{color:#F0928A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .err{color:#F0928A}}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:380px){.row{grid-template-columns:1fr}}
+.cta{display:block;width:100%;margin-top:18px;background:var(--rose);color:var(--on-rose);border:0;border-radius:12px;padding:14px 16px;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+.cta.ghost{background:none;color:var(--ink);border:1.5px solid var(--line)}
+.check{display:flex;gap:10px;align-items:flex-start;margin:4px 0 14px;font-size:14px}
+.check input{margin-top:3px;width:18px;height:18px;accent-color:var(--rose)}
+dl.recap{margin:0;display:grid;gap:0}
+dl.recap > div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+dl.recap > div:last-child{border-bottom:0}
+dt{color:var(--muted);font-size:13px;flex:none}
+dd{margin:0;text-align:right;min-width:0;overflow-wrap:anywhere;font-weight:500}
+dd .desc{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:2px}
+.link{background:none;border:0;color:var(--rose);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;padding:0;margin-left:8px}
+.note{font-size:12.5px;color:var(--muted);margin:12px 0 0}
+pre.json{max-height:260px;overflow:auto;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word;margin:10px 0 0}
+.tag{display:inline-block;background:var(--rose-soft);color:var(--rose);font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.done{text-align:center;padding:10px 0}
+.done h1{margin-top:6px}
+@media (prefers-reduced-motion: reduce){.card{transition:none}}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <span class="brand">Studio Shiori</span>
+    <button class="back" id="back" type="button" hidden>Retour</button>
+  </header>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+  <main id="view"></main>
+</div>
+
+<script>
+/* ============ RÉGLAGES À MODIFIER PLUS TARD ============ */
+// 1) Adresse du webhook Make : colle-la entre les guillemets. Vide = mode test (rien n'est envoyé).
+const WEBHOOK_URL = "";
+
+// 2) Tes illustrations : colle l'adresse de chaque image (ex. "images/couleur-1.jpg"). Vide = illustration provisoire.
+//    Clés : style:color | style:lineart | count:color:1|2|3|plus | count:lineart:1|2|3|plus | format:portrait|half|full
+const IMAGES = {};
+
+/* ============ DONNÉES (grille tarifaire Shiori auteurs) ============ */
+const PRICES = {
+  color:  { portrait:[50,80,128], half:[70,112,179], full:[90,144,230] },
+  lineart:{ portrait:[30,48,77],  half:[40,64,102],  full:[55,88,141] }
+};
+const STYLES = { color:"Couleur", lineart:"Line art" };
+const FORMATS = { portrait:"Portrait / buste", half:"Demi-corps", full:"Plein pieds" };
+const RIGHTS = [
+  { id:"perso", name:"Personnel", sub:"Usage privé uniquement, aucune exploitation professionnelle ou commerciale.", tag:"Inclus" },
+  { id:"com", name:"Communication", sub:"Réseaux sociaux, site d'auteur, newsletter, teasers et communication autour du roman.", tag:"+10 %" },
+  { id:"edition", name:"Édition", sub:"Communication + reproduction à l'intérieur du livre papier et numérique.", tag:"+60 %" },
+  { id:"goodies", name:"Goodies & crowdfunding", sub:"Communication + campagne Ulule, Kickstarter ou précommandes + reproduction sur goodies et contreparties liés au roman.", tag:"+50 %" },
+  { id:"edgoodies", name:"Édition & goodies", sub:"Communication + intérieur du livre papier et ebook + goodies et contreparties liés au roman.", tag:"+75 %" },
+  { id:"couv", name:"Couverture", sub:"Couverture papier et ebook + communication et promotion du livre utilisant sa couverture.", tag:"+100 %" },
+  { id:"merch", name:"Merchandising", sub:"Produits utilisant l'illustration et vendus indépendamment du livre.", tag:"Sur devis" }
+];
+const STEPS = ["style","count","animal","format","bg","rights","client","recap"];
+
+/* ============ ÉTAT ============ */
+const S = { step:0, style:null, count:null, plusN:4, animal:null, animalDesc:"", format:null, bg:null, bgDesc:"", rights:null,
+  c:{ last:"", first:"", phone:"", email:"", address:"" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} };
+const view = document.getElementById("view");
+const backBtn = document.getElementById("back");
+const prog = document.getElementById("progress");
+
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const eur = n => n + " €";
+const countIdx = () => S.count === "plus" ? 2 : (S.count || 1) - 1;
+const nbPersos = () => S.count === "plus" ? S.plusN : S.count;
+const countLabel = () => S.count === "plus" ? S.plusN + " personnages" : S.count + (S.count === 1 ? " personnage" : " personnages");
+
+/* ============ ILLUSTRATIONS PROVISOIRES (SVG) ============ */
+function figure(x, scale, kind, filled){
+  const fill = filled ? "var(--art)" : "none";
+  const st = 'stroke="var(--rose)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
+  const head = `<circle cx="${x}" cy="40" r="14" fill="${fill}" ${st}/>`;
+  const sh = `M${x-26} 118 C${x-26} 80 ${x-12} 66 ${x} 66 C${x+12} 66 ${x+26} 80 ${x+26} 118 Z`;
+  let body = "";
+  if (kind === "portrait") body = `<path d="${sh}" fill="${filled?'var(--art-2)':'none'}" ${st}/>`;
+  if (kind === "half") body = `<path d="M${x-22} 150 L${x-26} 82 C${x-24} 68 ${x-12} 66 ${x} 66 C${x+12} 66 ${x+24} 68 ${x+26} 82 L${x+22} 150 Z" fill="${filled?'var(--art-2)':'none'}" ${st}/>`;
+  if (kind === "full") body = `<path d="M${x-20} 112 L${x-24} 74 C${x-22} 66 ${x-12} 64 ${x} 64 C${x+12} 64 ${x+22} 66 ${x+24} 74 L${x+20} 112 Z" fill="${filled?'var(--art-2)':'none'}" ${st}/><path d="M${x-14} 112 L${x-16} 168 M${x+14} 112 L${x+16} 168" ${st}/>`;
+  return `<g transform="translate(${x} 0) scale(${scale}) translate(${-x} 0)">${body}${head}</g>`;
+}
+function placeholder(filled, n, kind){
+  let xs = n === 1 ? [60] : n === 2 ? [38, 82] : [26, 60, 94];
+  const sc = n === 1 ? 1 : n === 2 ? .86 : .74;
+  const view = kind === "full" ? "0 14 120 160" : "0 14 120 150";
+  return `<svg viewBox="${view}" role="img" aria-label="Illustration provisoire">${xs.map(x => figure(x, sc, kind, filled)).join("")}</svg>`;
+}
+function animalSvg(){
+  const st = 'stroke="var(--rose)" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
+  return `<svg viewBox="0 0 120 100" role="img" aria-label="Illustration provisoire"><path d="M34 40 L40 12 L56 30 M86 40 L80 12 L64 30" fill="var(--art)" ${st}/><ellipse cx="60" cy="56" rx="32" ry="28" fill="var(--art-2)" ${st}/><circle cx="48" cy="52" r="3" fill="var(--rose)"/><circle cx="72" cy="52" r="3" fill="var(--rose)"/><path d="M55 64 Q60 69 65 64" fill="none" ${st}/></svg>`;
+}
+function artBlock(key, svg){
+  const url = IMAGES[key];
+  return `<div class="art">${url ? `<img src="${esc(url)}" alt="" loading="lazy">` : svg}</div>`;
+}
+
+/* ============ ÉTAPES ============ */
+function head(eyebrow, title, lead){
+  return `<p class="eyebrow">${eyebrow}</p><h1>${title}</h1>${lead ? `<p class="lead">${lead}</p>` : ""}`;
+}
+function card(id, on, art, name, sub, price, see){
+  return `<button type="button" class="card" data-pick="${id}" aria-pressed="${on}">${art}<div class="body"><div><div class="name">${name}</div>${sub?`<div class="sub">${sub}</div>`:""}${price?`<div class="price">${price}</div>`:""}</div>${see?`<span class="see">Voir</span>`:""}</div></button>`;
+}
+function textCard(id, on, name, sub, price){
+  return `<button type="button" class="card text" data-pick="${id}" aria-pressed="${on}"><div class="body"><div><div class="name">${name}</div>${sub?`<div class="sub">${sub}</div>`:""}</div>${price?`<span class="price" style="margin-top:2px;white-space:nowrap">${price}</span>`:""}</div></button>`;
+}
+
+function stepStyle(){
+  return head("Votre demande de devis", "Quelle illustration souhaitez-vous ?", "Choisissez le rendu. Les tarifs indiqués sont des points de départ ; votre devis précisera le prix final.")
+   + `<div class="cards">`
+   + card("color", S.style==="color", artBlock("style:color", placeholder(true,1,"half")), "Couleur", "Illustration entièrement mise en couleur", "À partir de " + eur(PRICES.color.portrait[0]), true)
+   + card("lineart", S.style==="lineart", artBlock("style:lineart", placeholder(false,1,"half")), "Line art", "Dessin au trait, sans couleur", "À partir de " + eur(PRICES.lineart.portrait[0]), true)
+   + `</div>`;
+}
+function stepCount(){
+  const p = PRICES[S.style];
+  const opts = [
+    [1, "1 personnage", "Dès " + eur(p.portrait[0]) + " (portrait)"],
+    [2, "2 personnages", "Dès " + eur(p.portrait[1]) + " (portrait)"],
+    [3, "3 personnages", "Dès " + eur(p.portrait[2]) + " (portrait)"],
+    ["plus", "4 personnages ou plus", "3 pers. dès " + eur(p.portrait[2]) + ", puis +60 % par personnage en plus"]
+  ];
+  let h = head("Les personnages", "Combien de personnages ?", "Le prix du portrait/buste est indiqué ; le format se choisit plus loin.") + `<div class="cards">`;
+  opts.forEach(o => {
+    const n = o[0] === "plus" ? 3 : o[0];
+    h += card(o[0], S.count === o[0], artBlock("count:"+S.style+":"+o[0], placeholder(S.style==="color", n, "portrait")), o[1], "", o[2], true);
+  });
+  h += `</div>`;
+  if (S.count === "plus") {
+    h += `<div class="panel"><div class="field"><label class="f" for="plusN">Nombre de personnages</label><input id="plusN" type="number" min="4" max="20" inputmode="numeric" value="${S.plusN}"></div><button class="cta" type="button" id="next" style="margin-top:0">Continuer</button></div>`;
+  }
+  return h;
+}
+function stepAnimal(){
+  let h = head("En option", "Un animal ou une créature ?", "Vous pouvez en ajouter un à votre illustration. Son prix est établi sur devis.") + `<div class="cards two">`
+    + card("no", S.animal===false, artBlock("", placeholder(S.style==="color",1,"portrait")), "Non merci", "", "", false)
+    + card("yes", S.animal===true, artBlock("", animalSvg()), "Oui, j'en ajoute un", "", "Sur devis", false)
+    + `</div>`;
+  if (S.animal === true) {
+    h += `<div class="panel"><div class="field"><label class="f" for="animalDesc">Décrivez votre animal ou créature</label><textarea id="animalDesc" placeholder="Espèce, taille, couleur, caractère, rôle dans la scène…">${esc(S.animalDesc)}</textarea></div><button class="cta" type="button" id="next" style="margin-top:0">Continuer</button></div>`;
+  }
+  return h;
+}
+function stepFormat(){
+  const idx = countIdx();
+  const price = f => S.count === "plus" ? "3 pers. : " + eur(PRICES[S.style][f][2]) + ", +60 % par pers. en plus" : eur(PRICES[S.style][f][idx]);
+  let h = head("Le cadrage", "Quel format ?", "Jusqu'où l'illustration descend. Tarif pour " + countLabel() + ", " + STYLES[S.style].toLowerCase() + ".") + `<div class="cards">`;
+  const kinds = { portrait:"portrait", half:"half", full:"full" };
+  Object.keys(FORMATS).forEach(f => {
+    h += card(f, S.format===f, artBlock("format:"+f, placeholder(S.style==="color", Math.min(nbPersos(),3), kinds[f])), FORMATS[f], "", price(f), true);
+  });
+  return h + `</div>`;
+}
+function stepBg(){
+  let h = head("Le décor", "Quel fond ?", "Un fond simple est inclus. Un fond détaillé est établi sur devis.") + `<div class="cards">`
+    + textCard("simple", S.bg==="simple", "Fond simple", "Couleur unie ou dégradé discret", "Gratuit")
+    + textCard("detail", S.bg==="detail", "Fond détaillé", "Un décor travaillé, selon vos envies", "Sur devis")
+    + `</div>`;
+  if (S.bg === "detail") {
+    h += `<div class="panel"><div class="field"><label class="f" for="bgDesc">Que souhaitez-vous comme fond ?</label><textarea id="bgDesc" placeholder="Lieu, ambiance, éléments importants du décor…">${esc(S.bgDesc)}</textarea></div><button class="cta" type="button" id="next" style="margin-top:0">Continuer</button></div>`;
+  }
+  return h;
+}
+function stepRights(){
+  let h = head("Cession des droits", "Pour quel usage ?", "L'usage détermine les droits cédés. Le pourcentage s'ajoute au tarif de l'illustration.") + `<div class="cards">`;
+  RIGHTS.forEach(r => { h += textCard(r.id, S.rights===r.id, r.name, r.sub, r.tag); });
+  return h + `</div>`;
+}
+function fieldErr(k){ return S.errors[k] ? `<div class="err" id="err-${k}">${S.errors[k]}</div>` : ""; }
+function inp(id, label, type, val, extra){
+  return `<div class="field"><label class="f" for="${id}">${label}</label><input id="${id}" type="${type}" value="${esc(val)}" ${S.errors[id]?'class="bad"':""} ${extra||""}>${fieldErr(id)}</div>`;
+}
+function stepClient(){
+  return head("Vos coordonnées", "Pour préparer votre devis", "Ces informations servent uniquement à établir votre devis.")
+   + `<div class="panel" style="margin-top:0">`
+   + `<div class="row">${inp("last","Nom","text",S.c.last,'autocomplete="family-name"')}${inp("first","Prénom","text",S.c.first,'autocomplete="given-name"')}</div>`
+   + inp("phone","Téléphone","tel",S.c.phone,'autocomplete="tel" inputmode="tel"')
+   + inp("email","Adresse e-mail","email",S.c.email,'autocomplete="email"')
+   + `<div class="field"><label class="f" for="address">Adresse postale</label><textarea id="address" ${S.errors.address?'class="bad"':""} autocomplete="street-address" placeholder="Numéro, rue, code postal, ville" style="min-height:76px">${esc(S.c.address)}</textarea>${fieldErr("address")}</div>`
+   + `<label class="check"><input type="checkbox" id="company" ${S.company?"checked":""}><span>Ce devis est pour une entreprise (EI, société…)</span></label>`
+   + (S.company ? inp("companyName","Nom de l'entreprise","text",S.companyName,'autocomplete="organization"') + inp("siren","Numéro SIREN (9 chiffres)","text",S.siren,'inputmode="numeric" maxlength="11"') : "")
+   + `<div class="field" style="margin-bottom:0"><label class="f" for="message">Message <span style="font-weight:400;color:var(--muted)">(facultatif)</span></label><textarea id="message" placeholder="Une précision, une date souhaitée, une question…">${esc(S.message)}</textarea></div>`
+   + `</div><button class="cta" type="button" id="next">Voir le récapitulatif</button>`;
+}
+function row(label, value, goto, desc){
+  return `<div><dt>${label}</dt><dd>${esc(value)}${desc?`<span class="desc">${esc(desc)}</span>`:""}${goto!==undefined?`<button type="button" class="link" data-goto="${goto}">Modifier</button>`:""}</dd></div>`;
+}
+function rightName(){ return RIGHTS.find(r => r.id === S.rights); }
+function stepRecap(){
+  const r = rightName();
+  let h = head("Dernière vérification", "Votre demande", "Relisez les informations avant l'envoi. Mégane vous répondra avec un devis détaillé.")
+   + `<div class="panel" style="margin-top:0"><dl class="recap">`
+   + row("Rendu", STYLES[S.style], 0)
+   + row("Personnages", countLabel(), 1)
+   + row("Animal / créature", S.animal ? "Oui" : "Non", 2, S.animal ? S.animalDesc : "")
+   + row("Format", FORMATS[S.format], 3)
+   + row("Fond", S.bg === "simple" ? "Simple" : "Détaillé", 4, S.bg === "detail" ? S.bgDesc : "")
+   + row("Utilisation", r.name + " (" + r.tag.toLowerCase() + ")", 5)
+   + `</dl></div><div class="panel"><dl class="recap">`
+   + row("Nom", S.c.first + " " + S.c.last, 6)
+   + row("Téléphone", S.c.phone)
+   + row("E-mail", S.c.email)
+   + row("Adresse", S.c.address)
+   + (S.company ? row("Entreprise", S.companyName, 6, "SIREN " + S.siren) : "")
+   + (S.message ? row("Message", S.message) : "")
+   + `</dl></div>`
+   + `<p class="note">Le prix final figure sur votre devis. Les options « sur devis » y seront chiffrées.</p>`
+   + `<button class="cta" type="button" id="send">Envoyer ma demande de devis</button>`;
+  return h;
+}
+function stepDone(){
+  if (S.payload.testMode) {
+    return `<div class="done"><span class="tag">Mode test</span><h1>Aucun envoi réel</h1><p class="lead">L'adresse du webhook Make n'est pas encore renseignée. Voici les données qui partiront vers Make une fois la connexion faite.</p></div>`
+     + `<div class="panel" style="margin-top:0"><pre class="json" id="json">${esc(JSON.stringify(S.payload.data, null, 2))}</pre><button class="cta ghost" type="button" id="copy">Copier les données</button></div>`
+     + `<button class="cta" type="button" id="restart">Refaire un essai</button>`;
+  }
+  return `<div class="done"><span class="tag">Demande envoyée</span><h1>Merci ${esc(S.c.first)} !</h1><p class="lead">Mégane a bien reçu votre demande et vous enverra un devis par e-mail.</p></div><button class="cta ghost" type="button" id="restart">Nouvelle demande</button>`;
+}
+
+/* ============ AFFICHAGE ============ */
+function render(keepScroll){
+  const name = STEPS[S.step];
+  const fn = { style:stepStyle, count:stepCount, animal:stepAnimal, format:stepFormat, bg:stepBg, rights:stepRights, client:stepClient, recap:stepRecap };
+  view.innerHTML = S.sent ? stepDone() : fn[name]();
+  backBtn.hidden = S.sent || S.step === 0;
+  prog.innerHTML = S.sent ? "" : STEPS.map((_, i) => `<i class="${i <= S.step ? "on" : ""}"></i>`).join("");
+  if (!keepScroll) window.scrollTo({ top:0 });
+}
+function go(n){ S.step = n; render(); }
+function next(){ go(Math.min(S.step + 1, STEPS.length - 1)); }
+
+function pick(id){
+  const name = STEPS[S.step];
+  if (name === "style") { S.style = id; setTimeout(next, 180); render(true); }
+  else if (name === "count") {
+    S.count = id === "plus" ? "plus" : Number(id);
+    if (id === "plus") render(true); else { render(true); setTimeout(next, 180); }
+  }
+  else if (name === "animal") {
+    S.animal = id === "yes";
+    if (S.animal) render(true); else { S.animalDesc = ""; render(true); setTimeout(next, 180); }
+  }
+  else if (name === "format") { S.format = id; render(true); setTimeout(next, 180); }
+  else if (name === "bg") {
+    S.bg = id;
+    if (id === "detail") render(true); else { S.bgDesc = ""; render(true); setTimeout(next, 180); }
+  }
+  else if (name === "rights") { S.rights = id; render(true); setTimeout(next, 180); }
+}
+
+view.addEventListener("click", e => {
+  const p = e.target.closest("[data-pick]");
+  if (p) return pick(p.dataset.pick);
+  const g = e.target.closest("[data-goto]");
+  if (g) return go(Number(g.dataset.goto));
+  if (e.target.id === "next") return onNext();
+  if (e.target.id === "send") return send();
+  if (e.target.id === "restart") return restart();
+  if (e.target.id === "copy") return copyJson(e.target);
+});
+view.addEventListener("input", e => {
+  const t = e.target, id = t.id;
+  if (id === "plusN") S.plusN = Math.max(4, parseInt(t.value, 10) || 4);
+  else if (id === "animalDesc") S.animalDesc = t.value;
+  else if (id === "bgDesc") S.bgDesc = t.value;
+  else if (["last","first","phone","email","address"].includes(id)) S.c[id] = t.value;
+  else if (id === "companyName") S.companyName = t.value;
+  else if (id === "siren") S.siren = t.value;
+  else if (id === "message") S.message = t.value;
+});
+view.addEventListener("change", e => {
+  if (e.target.id === "company") { S.company = e.target.checked; render(true); }
+});
+backBtn.addEventListener("click", () => go(Math.max(S.step - 1, 0)));
+
+function onNext(){
+  const name = STEPS[S.step];
+  if (name === "client") { if (validate()) next(); }
+  else next();
+}
+function validate(){
+  const er = {};
+  const c = S.c;
+  if (!c.last.trim()) er.last = "Indiquez votre nom.";
+  if (!c.first.trim()) er.first = "Indiquez votre prénom.";
+  if (!/^[+()\d\s.-]{8,}$/.test(c.phone.trim())) er.phone = "Indiquez un numéro de téléphone valide.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) er.email = "Indiquez une adresse e-mail valide.";
+  if (c.address.trim().length < 8) er.address = "Indiquez votre adresse postale complète.";
+  if (S.company) {
+    if (!S.companyName.trim()) er.companyName = "Indiquez le nom de l'entreprise.";
+    if (!/^\d{9}$/.test(S.siren.replace(/\s/g, ""))) er.siren = "Le SIREN comporte 9 chiffres.";
+  }
+  S.errors = er;
+  render(true);
+  const first = Object.keys(er)[0];
+  if (first) { const el = document.getElementById(first); if (el) el.focus(); }
+  return !first;
+}
+
+function orderId(){
+  const d = new Date(), pad = n => String(n).padStart(2, "0");
+  const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return "CMD-" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "-" + rnd;
+}
+function buildPayload(){
+  const r = rightName();
+  return {
+    source: "app-devis-shiori-v1",
+    orderId: orderId(),
+    createdAt: new Date().toISOString(),
+    style: S.style,
+    characters: { type: S.count === "plus" ? "plus" : "exact", count: nbPersos() },
+    animal: { included: !!S.animal, description: S.animal ? S.animalDesc : "" },
+    format: S.format,
+    background: { type: S.bg, description: S.bg === "detail" ? S.bgDesc : "" },
+    rights: { id: r.id, label: r.name, supplement: r.tag },
+    client: { lastName: S.c.last.trim(), firstName: S.c.first.trim(), phone: S.c.phone.trim(), email: S.c.email.trim(), postalAddress: S.c.address.trim() },
+    company: { isCompany: S.company, name: S.company ? S.companyName.trim() : "", siren: S.company ? S.siren.replace(/\s/g, "") : "" },
+    message: S.message.trim()
+  };
+}
+async function send(){
+  const btn = document.getElementById("send");
+  const data = buildPayload();
+  if (!WEBHOOK_URL) { S.payload = { testMode:true, data }; S.sent = true; return render(); }
+  btn.disabled = true; btn.textContent = "Envoi en cours…";
+  try {
+    const res = await fetch(WEBHOOK_URL, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(data) });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    S.payload = { testMode:false, data }; S.sent = true; render();
+  } catch (err) {
+    btn.disabled = false; btn.textContent = "Envoyer ma demande de devis";
+    if (!document.getElementById("send-err")) btn.insertAdjacentHTML("afterend", '<div class="err" id="send-err" role="alert">L\'envoi n\'a pas abouti. Vérifiez votre connexion et réessayez.</div>');
+  }
+}
+function copyJson(btn){
+  const text = document.getElementById("json").textContent;
+  const ok = () => { btn.textContent = "Copié"; };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("json")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Texte sélectionné, copiez-le"; };
+  try { navigator.clipboard.writeText(text).then(ok, fallback); } catch (e) { fallback(); }
+}
+function restart(){
+  Object.assign(S, { step:0, style:null, count:null, plusN:4, animal:null, animalDesc:"", format:null, bg:null, bgDesc:"", rights:null,
+    c:{ last:"", first:"", phone:"", email:"", address:"" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} });
+  render();
+}
+render();
+</script>
+
+</body>
+</html>
