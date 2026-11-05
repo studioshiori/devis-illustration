@@ -131,11 +131,13 @@ const RIGHTS = [
   { id:"couv", name:"Couverture", sub:"Couverture papier et ebook + communication et promotion du livre utilisant sa couverture.", tag:"+100 %" },
   { id:"merch", name:"Merchandising", sub:"Produits utilisant l'illustration et vendus indépendamment du livre.", tag:"Sur devis" }
 ];
+const COUNTRIES = { FR:"France", BE:"Belgique", CH:"Suisse", LU:"Luxembourg", CA:"Canada", DE:"Allemagne", ES:"Espagne", IT:"Italie", GB:"Royaume-Uni", US:"États-Unis" };
+const RIGHTS_PCT = { perso:0, com:10, edition:60, goodies:50, edgoodies:75, couv:100, merch:null };
 const STEPS = ["style","count","animal","format","bg","rights","client","recap"];
 
 /* ============ ÉTAT ============ */
 const S = { step:0, style:null, count:null, plusN:4, animal:null, animalDesc:"", format:null, bg:null, bgDesc:"", rights:null,
-  c:{ last:"", first:"", phone:"", email:"", address:"" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} };
+  c:{ last:"", first:"", phone:"", email:"", street:"", zip:"", city:"", country:"FR" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} };
 const view = document.getElementById("view");
 const backBtn = document.getElementById("back");
 const prog = document.getElementById("progress");
@@ -255,7 +257,9 @@ function stepClient(){
    + `<div class="row">${inp("last","Nom","text",S.c.last,'autocomplete="family-name"')}${inp("first","Prénom","text",S.c.first,'autocomplete="given-name"')}</div>`
    + inp("phone","Téléphone","tel",S.c.phone,'autocomplete="tel" inputmode="tel"')
    + inp("email","Adresse e-mail","email",S.c.email,'autocomplete="email"')
-   + `<div class="field"><label class="f" for="address">Adresse postale</label><textarea id="address" ${S.errors.address?'class="bad"':""} autocomplete="street-address" placeholder="Numéro, rue, code postal, ville" style="min-height:76px">${esc(S.c.address)}</textarea>${fieldErr("address")}</div>`
+   + inp("street","Adresse (numéro et rue)","text",S.c.street,'autocomplete="street-address"')
+   + `<div class="row">${inp("zip","Code postal","text",S.c.zip,'autocomplete="postal-code"')}${inp("city","Ville","text",S.c.city,'autocomplete="address-level2"')}</div>`
+   + `<div class="field"><label class="f" for="country">Pays</label><select id="country" autocomplete="country">${Object.keys(COUNTRIES).map(k => `<option value="${k}" ${S.c.country===k?"selected":""}>${COUNTRIES[k]}</option>`).join("")}</select></div>`
    + `<label class="check"><input type="checkbox" id="company" ${S.company?"checked":""}><span>Ce devis est pour une entreprise (EI, société…)</span></label>`
    + (S.company ? inp("companyName","Nom de l'entreprise","text",S.companyName,'autocomplete="organization"') + inp("siren","Numéro SIREN (9 chiffres)","text",S.siren,'inputmode="numeric" maxlength="11"') : "")
    + `<div class="field" style="margin-bottom:0"><label class="f" for="message">Message <span style="font-weight:400;color:var(--muted)">(facultatif)</span></label><textarea id="message" placeholder="Une précision, une date souhaitée, une question…">${esc(S.message)}</textarea></div>`
@@ -279,7 +283,7 @@ function stepRecap(){
    + row("Nom", S.c.first + " " + S.c.last, 6)
    + row("Téléphone", S.c.phone)
    + row("E-mail", S.c.email)
-   + row("Adresse", S.c.address)
+   + row("Adresse", fullAddress())
    + (S.company ? row("Entreprise", S.companyName, 6, "SIREN " + S.siren) : "")
    + (S.message ? row("Message", S.message) : "")
    + `</dl></div>`
@@ -342,13 +346,14 @@ view.addEventListener("input", e => {
   if (id === "plusN") S.plusN = Math.max(4, parseInt(t.value, 10) || 4);
   else if (id === "animalDesc") S.animalDesc = t.value;
   else if (id === "bgDesc") S.bgDesc = t.value;
-  else if (["last","first","phone","email","address"].includes(id)) S.c[id] = t.value;
+  else if (["last","first","phone","email","street","zip","city"].includes(id)) S.c[id] = t.value;
   else if (id === "companyName") S.companyName = t.value;
   else if (id === "siren") S.siren = t.value;
   else if (id === "message") S.message = t.value;
 });
 view.addEventListener("change", e => {
   if (e.target.id === "company") { S.company = e.target.checked; render(true); }
+  if (e.target.id === "country") { S.c.country = e.target.value; }
 });
 backBtn.addEventListener("click", () => go(Math.max(S.step - 1, 0)));
 
@@ -364,7 +369,9 @@ function validate(){
   if (!c.first.trim()) er.first = "Indiquez votre prénom.";
   if (!/^[+()\d\s.-]{8,}$/.test(c.phone.trim())) er.phone = "Indiquez un numéro de téléphone valide.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.email.trim())) er.email = "Indiquez une adresse e-mail valide.";
-  if (c.address.trim().length < 8) er.address = "Indiquez votre adresse postale complète.";
+  if (c.street.trim().length < 3) er.street = "Indiquez votre numéro et le nom de la rue.";
+  if (!/^[A-Za-z0-9 -]{3,10}$/.test(c.zip.trim())) er.zip = "Indiquez votre code postal.";
+  if (c.city.trim().length < 2) er.city = "Indiquez votre ville.";
   if (S.company) {
     if (!S.companyName.trim()) er.companyName = "Indiquez le nom de l'entreprise.";
     if (!/^\d{9}$/.test(S.siren.replace(/\s/g, ""))) er.siren = "Le SIREN comporte 9 chiffres.";
@@ -376,6 +383,26 @@ function validate(){
   return !first;
 }
 
+function fullAddress(){
+  return S.c.street.trim() + ", " + S.c.zip.trim() + " " + S.c.city.trim() + ", " + COUNTRIES[S.c.country];
+}
+/* Prix calculé pour Make : n'est jamais affiché au client. Pour 4 personnages ou plus : +60 % par personnage en plus, à partir du tarif à 3. */
+function basePrice(){
+  const p = PRICES[S.style][S.format];
+  if (S.count === "plus") return Math.round(p[2] * Math.pow(1.6, S.plusN - 3));
+  return p[countIdx()];
+}
+function pricing(){
+  const base = basePrice();
+  const pct = RIGHTS_PCT[S.rights];
+  return {
+    currency: "EUR",
+    illustrationPrice: base,
+    rightsPercent: pct === null ? 0 : pct,
+    rightsOnQuote: pct === null,
+    rightsAmount: pct === null ? 0 : Math.round(base * pct) / 100
+  };
+}
 function orderId(){
   const d = new Date(), pad = n => String(n).padStart(2, "0");
   const rnd = Math.random().toString(36).slice(2, 6).toUpperCase();
@@ -393,9 +420,11 @@ function buildPayload(){
     format: S.format,
     background: { type: S.bg, description: S.bg === "detail" ? S.bgDesc : "" },
     rights: { id: r.id, label: r.name, supplement: r.tag },
-    client: { lastName: S.c.last.trim(), firstName: S.c.first.trim(), phone: S.c.phone.trim(), email: S.c.email.trim(), postalAddress: S.c.address.trim() },
+    client: { lastName: S.c.last.trim(), firstName: S.c.first.trim(), phone: S.c.phone.trim(), email: S.c.email.trim().toLowerCase(), postalAddress: fullAddress(),
+      address: { street: S.c.street.trim(), postalCode: S.c.zip.trim(), city: S.c.city.trim(), countryCode: S.c.country, country: COUNTRIES[S.c.country] } },
     company: { isCompany: S.company, name: S.company ? S.companyName.trim() : "", siren: S.company ? S.siren.replace(/\s/g, "") : "" },
-    message: S.message.trim()
+    message: S.message.trim(),
+    pricing: pricing()
   };
 }
 async function send(){
@@ -420,7 +449,7 @@ function copyJson(btn){
 }
 function restart(){
   Object.assign(S, { step:0, style:null, count:null, plusN:4, animal:null, animalDesc:"", format:null, bg:null, bgDesc:"", rights:null,
-    c:{ last:"", first:"", phone:"", email:"", address:"" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} });
+    c:{ last:"", first:"", phone:"", email:"", street:"", zip:"", city:"", country:"FR" }, company:false, companyName:"", siren:"", message:"", sent:false, payload:null, errors:{} });
   render();
 }
 render();
